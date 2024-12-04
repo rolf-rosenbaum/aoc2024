@@ -1,11 +1,11 @@
 fun main() {
 
     fun part1(input: List<String>): Int {
-        return sumLine(input.joinToString(""))
+        return addMultiplications(input.joinToString(""))
     }
 
     fun part2(input: List<String>): Int {
-        return sumLine2(input.joinToString(""))
+        return addMultiplications2(input.joinToString(""))
     }
 
     val testInput = readInput("Day03_test")
@@ -20,13 +20,13 @@ fun main() {
 
 val multiplications = "mul\\(\\d{1,3},\\d{1,3}\\)".toRegex()
 
-private fun sumLine(line: String) = multiplications.findAll(line).sumOf {
+private fun addMultiplications(line: String) = multiplications.findAll(line).sumOf {
     it.value.split(",").let { factors ->
         factors.first().drop(4).toInt() * factors.second().dropLast(1).toInt()
     }
 }
 
-private fun sumLine2(line: String): Int {
+private fun addMultiplications2(line: String): Int {
     var rest = line
     var sum = 0
     var pos: Int
@@ -35,7 +35,7 @@ private fun sumLine2(line: String): Int {
         // take all to first don't()
         pos = rest.indexOf("don't")
         if (pos == -1) pos = rest.length
-        sum += sumLine(rest.take(pos))
+        sum += addMultiplications(rest.take(pos))
 
         // drop the scanned part
         rest = rest.drop(pos)
