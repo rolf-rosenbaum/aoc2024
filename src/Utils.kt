@@ -38,7 +38,12 @@ data class Point(val x: Int, val y: Int) {
      * includes diagonal neighbors
      */
 
-    fun allNeighbours(): Set<Point> =
+    fun allNeighbours(
+        minX: Int = Int.MIN_VALUE,
+        maxX: Int = Int.MAX_VALUE,
+        minY: Int = Int.MIN_VALUE,
+        maxY: Int = Int.MAX_VALUE,
+    ): Set<Point> =
         setOf(
             Point(x - 1, y - 1),
             Point(x, y - 1),
@@ -48,7 +53,7 @@ data class Point(val x: Int, val y: Int) {
             Point(x - 1, y + 1),
             Point(x, y + 1),
             Point(x + 1, y + 1)
-        )
+        ).filter { it.x in minX..maxX && it.y in minY .. maxY}.toSet()
 
     fun leftOf() = Point(x - 1, y)
     fun rightOf() = Point(x + 1, y)
@@ -57,12 +62,12 @@ data class Point(val x: Int, val y: Int) {
 
     fun distanceTo(other: Point) = abs(x - other.x) + abs(y - other.y)
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
-    operator fun minus(other: Point) = Point(other.x -x, other.y - y)
-    fun move(direction: Direction, distance: Int): Point = when(direction) {
-        Direction.North -> copy(x, y-distance)
-        Direction.East -> copy(x+distance, y)
-        Direction.South -> copy(x, y+distance)
-        Direction.West -> copy(x-distance, y)
+    operator fun minus(other: Point) = Point(other.x - x, other.y - y)
+    fun move(direction: Direction, distance: Int): Point = when (direction) {
+        Direction.North -> copy(x, y - distance)
+        Direction.East -> copy(x + distance, y)
+        Direction.South -> copy(x, y + distance)
+        Direction.West -> copy(x - distance, y)
     }
 }
 
@@ -77,8 +82,9 @@ fun IntRange.union(other: IntRange): IntRange? {
         IntRange(minOf(first, other.first), maxOf(last, other.last))
     else null
 }
+
 fun IntRange.merge(other: IntRange): IntRange {
-    return IntRange(maxOf(first, other.first), minOf(last, other.last)).let {if (it.first >= it.last) 0..0 else it}
+    return IntRange(maxOf(first, other.first), minOf(last, other.last)).let { if (it.first >= it.last) 0..0 else it }
 }
 
 fun List<Int>.findPattern(minWindow: Int = 1, startIndex: Int = 1): Pair<Int, Int> {
@@ -103,22 +109,22 @@ fun Long.primeFactors(): List<Long> = mutableListOf<Long>().let { f ->
         }
 }
 
-fun Collection<Point>.maxX() = maxOf{it.x}
-fun Collection<Point>.maxY() = maxOf{it.y}
-fun Collection<Point>.minX() = minOf{it.x}
-fun Collection<Point>.minY() = minOf{it.y}
+fun Collection<Point>.maxX() = maxOf { it.x }
+fun Collection<Point>.maxY() = maxOf { it.y }
+fun Collection<Point>.minX() = minOf { it.x }
+fun Collection<Point>.minY() = minOf { it.y }
 
 enum class Direction(val vector: Vector) {
     North(Vector(0, -1)),
     East(Vector(1, 0)),
     South(Vector(0, 1)),
     West(Vector(-1, 0));
-    
+
     fun forwardDirections() = when (this) {
         North -> setOf(North, East, West)
-        East ->  setOf(East, North, South)
-        South ->  setOf(South, East, West)
-        West ->  setOf(West, South, North)
+        East -> setOf(East, North, South)
+        South -> setOf(South, East, West)
+        West -> setOf(West, South, North)
     }
 }
 
@@ -135,7 +141,7 @@ fun Iterable<Point>.polygonArea(includingPerimeter: Boolean = true): Long {
         sum -= from.y.toLong() * to.x.toLong()
     }
 
-    while(iter.hasNext()) {
+    while (iter.hasNext()) {
         val next = iter.next()
         continueLace(last, next)
         last = next
