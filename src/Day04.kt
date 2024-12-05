@@ -97,3 +97,4 @@ private fun List<Point>.isCrossWith(other: List<Point>): Boolean {
         )
     )
 }
+
