@@ -20,7 +20,7 @@ fun main() {
     part2(input).writeToConsole()
 }
 
-fun List<String>.parseLists(): Pair<List<Int>, List<Int>> =
+private fun List<String>.parseLists(): Pair<List<Int>, List<Int>> =
     map { it.split("   ").first().toInt() }.sorted() to
             map { it.split("   ").second().toInt() }.sorted()
 
