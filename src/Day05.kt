@@ -1,9 +1,12 @@
+private typealias Rule = Pair<Int, Int>
+private typealias Update = IntArray
+
 fun main() {
     fun part1(input: List<String>): Int {
         val (rules, updates) = input.parseInput()
 
         return updates.filter {
-            it.obeysRules(rules)
+            it.isCorrectlyOrdered(rules)
         }.sumOf { it[it.size / 2] }
     }
 
@@ -11,9 +14,9 @@ fun main() {
         val (rules, updates) = input.parseInput()
 
         return updates.filter {
-            !it.obeysRules(rules)
+            !it.isCorrectlyOrdered(rules)
         }.map {
-            it.order(rules)
+            it.orderBy(rules)
         }.sumOf { it[it.size / 2] }
     }
 
@@ -27,8 +30,8 @@ fun main() {
     part2(input).writeToConsole()
 }
 
-private fun IntArray.order(rules: List<Rule>): IntArray {
-    while (!obeysRules(rules)) {
+private fun IntArray.orderBy(rules: List<Rule>): IntArray {
+    while (!isCorrectlyOrdered(rules)) {
         rules.forEach { rule ->
             val f = this.firstOrNull { it == rule.first }
             val s = this.firstOrNull { it == rule.second }
@@ -44,7 +47,7 @@ private fun IntArray.order(rules: List<Rule>): IntArray {
     return this
 }
 
-private fun IntArray.obeysRules(rules: List<Rule>): Boolean {
+private fun IntArray.isCorrectlyOrdered(rules: List<Rule>): Boolean {
     rules.forEach { rule ->
         val f = this.firstOrNull { it == rule.first }
         val s = this.firstOrNull { it == rule.second }
@@ -64,6 +67,3 @@ private fun List<String>.parseInput(): Pair<List<Rule>, List<Update>> {
     }
     return rules to updates
 }
-
-private typealias Rule = Pair<Int, Int>
-private typealias Update = IntArray
