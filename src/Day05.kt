@@ -37,9 +37,7 @@ private fun IntArray.orderBy(rules: List<Rule>): IntArray {
             val s = this.firstOrNull { it == rule.second }
             if (f != null && s != null) {
                 if (indexOf(f) > indexOf(s)) {
-                    val tmp = this[indexOf(f)]
-                    this[indexOf(f)] = s
-                    this[indexOf(s)] = tmp
+                    swap(f, s)
                 }
             }
         }

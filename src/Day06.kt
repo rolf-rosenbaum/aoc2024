@@ -1,8 +1,8 @@
 fun main() {
 
-    fun part1(input: List<String>): Int {
+    fun part1(input: List<String>): Int? {
         return input.parseRoom()
-            .recordPath(input.startPos(), directions.first())!!.size
+            .recordPath(input.startPos(), directions.first())?.size
     }
 
     fun part2(input: List<String>): Int {

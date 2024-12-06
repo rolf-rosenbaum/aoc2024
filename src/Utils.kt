@@ -154,3 +154,10 @@ fun Iterable<Point>.polygonArea(includingPerimeter: Boolean = true): Long {
     return if (includingPerimeter) insideArea - perimeter / 2 + 1 + perimeter
     else insideArea
 }
+
+fun IntArray.swap(a: Int, b: Int) {
+    val tmp = this[indexOf(a)]
+    this[indexOf(a)] = b
+    this[indexOf(b)] = tmp
+
+}
