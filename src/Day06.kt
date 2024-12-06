@@ -1,16 +1,16 @@
 fun main() {
 
     fun part1(input: List<String>): Int? {
-        return input.parseRoom()
-            .recordPath(input.startPos(), directions.first())?.size
+        return input.parseRoom().recordPath()?.size
     }
 
     fun part2(input: List<String>): Int {
         return input.parseRoom()
-            .recordPath(input.startPos(), directions.first())
-            ?.drop(1)
-            ?.count { additionalObstacle ->
-                (input.parseRoom() + additionalObstacle).recordPath(input.startPos(), directions.first()) == null
+            .recordPath()
+            ?.drop(1) // start position cannot get an obstacle
+            ?.count { candidate ->
+                // path == null means there is a loop
+                (input.parseRoom() + candidate).recordPath() == null
             } ?: error("NO PATH")
     }
 
@@ -30,10 +30,16 @@ data class Room(
     val maxY: Int,
     val start: Point
 ) {
+    private val directions = listOf(
+        Vector(0, -1),
+        Vector(1, 0),
+        Vector(0, 1),
+        Vector(-1, 0),
+    )
 
     operator fun plus(p: Point) = copy(obstacles = obstacles + p)
 
-    fun recordPath(start: Point, direction: Vector): Set<Point>? {
+    fun recordPath(direction: Vector = directions.first()): Set<Point>? {
         var pos = start
         var dir = direction
         val path = mutableSetOf(start to dir)
@@ -42,7 +48,7 @@ data class Room(
         while ((pos + dir).isInRoom()) {
             val next = pos + dir
             if (!obstacles.contains(next)) {
-                if (!path.add(next to dir)) return null
+                if (!path.add(next to dir)) return null // loop found -> return null
                 pos = next
             } else
                 dir = directions[turnCount++ % 4]
@@ -52,13 +58,6 @@ data class Room(
     private fun Point.isInRoom(): Boolean = x in 0..maxX && y in 0..maxY
 }
 
-
-private fun List<String>.startPos(): Point {
-    forEachIndexed { y, line ->
-        if (line.indexOf('^') > 0) return Point(line.indexOf('^'), y)
-    }
-    error("no guard found")
-}
 
 private fun List<String>.parseRoom(): Room {
     var startPos = Point(-1, -1)
@@ -77,11 +76,3 @@ private fun List<String>.parseRoom(): Room {
         startPos
     )
 }
-
-
-val directions = listOf(
-    Vector(0, -1),
-    Vector(1, 0),
-    Vector(0, 1),
-    Vector(-1, 0),
-)
