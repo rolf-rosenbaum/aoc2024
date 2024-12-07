@@ -1,7 +1,7 @@
 fun main() {
 
     fun part1(input: List<String>): Int? {
-        return input.parseRoom().recordPath()?.size
+        return input.parseRoom().recordPathRecursive().size
     }
 
     fun part2(input: List<String>): Int {
@@ -38,6 +38,15 @@ data class Room(
     )
 
     operator fun plus(p: Point) = copy(obstacles = obstacles + p)
+
+    tailrec fun recordPathRecursive(currentPos: Point = start, direction: Vector = directions.first(),
+                                    turns: Int = 0, path: Set<Pair<Point, Vector>> = emptySet()): Set<Pair<Point, Vector>> {
+        val next = currentPos + direction
+        if (!next.isInRoom())
+            return path
+        return if (!obstacles.contains(next)) this.recordPathRecursive(next, direction, turns, path + (next to direction))
+        else this.recordPathRecursive(currentPos, directions[(turns + 1) % 4], turns + 1, path)
+    }
 
     fun recordPath(direction: Vector = directions.first()): Set<Point>? {
         var pos = start
