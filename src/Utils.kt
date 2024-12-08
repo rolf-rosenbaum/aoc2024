@@ -62,7 +62,7 @@ data class Point(val x: Int, val y: Int) {
 
     fun distanceTo(other: Point) = abs(x - other.x) + abs(y - other.y)
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
-    operator fun minus(other: Point) = Point(other.x - x, other.y - y)
+    operator fun minus(other: Point) = Point(x -other.x, y - other.y)
     fun move(direction: Direction, distance: Int): Point = when (direction) {
         Direction.North -> copy(x, y - distance)
         Direction.East -> copy(x + distance, y)
