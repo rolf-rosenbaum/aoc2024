@@ -5,11 +5,11 @@ typealias Trail = Map<Point, Int>
 fun main() {
     fun part1(input: List<String>): Int {
 
-        return input.parseTrail().scoreHikes()
+        return input.parseTrail().scoreAllHikes()
     }
 
     fun part2(input: List<String>): Int {
-        return input.parseTrail().scoreHikes(true)
+        return input.parseTrail().scoreAllHikes(true)
     }
 
     val testInput = readInput("Day10_test")
@@ -22,15 +22,11 @@ fun main() {
     part2(input).writeToConsole()
 }
 
-private fun Trail.scoreHikes(rating: Boolean = false): Int {
-    val startPoints = filter { (_, h) ->
-        h == 0
-    }.keys
-
-    return startPoints.sumOf {
-        this.scoreHikes(it, rating)
-    }
-}
+private fun Trail.scoreAllHikes(rating: Boolean = false): Int =
+    filter { (_, h) -> h == 0 }.keys
+        .sumOf {
+            scoreHikes(it, rating)
+        }
 
 fun Trail.scoreHikes(start: Point, rating: Boolean = false): Int {
     val visited = mutableSetOf<Point>()
