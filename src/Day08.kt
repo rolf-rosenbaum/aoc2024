@@ -20,11 +20,32 @@ fun main() {
 
 data class City(val antennas: Map<Char, List<Point>>, val maxX: Int, val maxY: Int) {
 
+    fun findAntinodes(): List<Point> {
+        return antennas.map { (_, points) ->
+            points.findAntinodes()
+        }.flatten()
+            .distinct()
+    }
+
     fun findAntinodes2(): List<Point> {
         return antennas.map { (_, points) ->
             points.findAntinodes2()
         }.flatten()
             .distinct()
+    }
+
+    private fun List<Point>.findAntinodes(): Set<Point> {
+        val antinodes = mutableSetOf<Point>()
+        this.forEach { first ->
+            this.forEach { second ->
+                if (second != first) {
+                    val diff = second - first
+                    antinodes.add(first - diff)
+                    antinodes.add(second + diff)
+                }
+            }
+        }
+        return antinodes.filter { it.isInCity() }.toSet()
     }
 
     private fun List<Point>.findAntinodes2(): Set<Point> {
@@ -39,27 +60,7 @@ data class City(val antennas: Map<Char, List<Point>>, val maxX: Int, val maxY: I
         return antinodes
     }
 
-    fun findAntinodes(): List<Point> {
-        return antennas.map { (_, points) ->
-            points.findAntinodes()
-        }.flatten()
-            .distinct()
-    }
-
     private fun Point.isInCity() = x in 0..maxX && y in 0..maxY
-    private fun List<Point>.findAntinodes(): Set<Point> {
-        val antinodes = mutableSetOf<Point>()
-        this.forEach { first ->
-            this.forEach { second ->
-                if (second != first) {
-                    val diff = second - first
-                    antinodes.add(first - diff)
-                    antinodes.add(second + diff)
-                }
-            }
-        }
-        return antinodes.filter { it.isInCity() }.toSet()
-    }
 }
 
 private fun List<String>.parseCity(): City {
