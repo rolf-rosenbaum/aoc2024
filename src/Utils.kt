@@ -161,3 +161,9 @@ fun IntArray.swap(a: Int, b: Int) {
     this[indexOf(b)] = tmp
 
 }
+fun MutableList<Pair<Int, Int>>.swap(a: Pair<Int, Int>, b: Pair<Int, Int>) {
+    val tmp = this[indexOf(a)]
+    this[indexOf(a)] = b
+    this[indexOf(b)] = tmp
+
+}
