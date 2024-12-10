@@ -23,7 +23,7 @@ fun main() {
 }
 
 private fun Trail.scoreHikes(rating: Boolean = false): Int {
-    val startPoints = filter { (p, h) ->
+    val startPoints = filter { (_, h) ->
         h == 0
     }.keys
 
