@@ -17,7 +17,7 @@ fun main() {
             val candidate = disk.first { it.second == index }
             val freeSpace = disk.firstOrNull { it.second == -1 && it.first >= candidate.first }
             if (freeSpace != null) {
-                if (freeSpace.first > candidate.first) {
+                if (freeSpace.first > candidate.first) { // free space is bigger than file, calculate free space left over
                     val i = disk.indexOf(freeSpace)
                     disk.removeAt(i)
                     disk.add(i, candidate)
@@ -25,7 +25,7 @@ fun main() {
                     val j = disk.lastIndexOf(candidate)
                     disk.removeAt(j)
                     disk.add(j, candidate.first to -1)
-                } else
+                } else // file fits exactly into free space, just swap places
                     disk.swap(candidate, freeSpace)
             }
         }

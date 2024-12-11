@@ -37,7 +37,7 @@ fun Trail.scoreHikes(start: Point, rating: Boolean = false): Int {
         val next = queue.poll()
         if (visited.add(next) || rating) {
             if (this[next] == 9) score++
-            queue.addAll(next.neighbours().filter { this[it] == this[next]!! + 1 })
+            queue.addAll(next.neighbours().filter { n -> this[n] == this[next]!! + 1 })
         }
     }
     return score
