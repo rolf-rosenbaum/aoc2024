@@ -87,18 +87,18 @@ fun IntRange.merge(other: IntRange): IntRange {
     return IntRange(maxOf(first, other.first), minOf(last, other.last)).let { if (it.first >= it.last) 0..0 else it }
 }
 
-fun List<Int>.findPattern(minWindow: Int = 1, startIndex: Int = 1): Pair<Int, Int> {
-    (startIndex..size / 2).forEach { windowSize ->
+fun List<Number>.findPattern(minWindow: Int = 5, startIndex: Int = 1): Pair<Int, Int> {
+    (minWindow..size / 2).forEach { windowSize ->
         print("$windowSize\r")
         val tmp = this.windowed(windowSize)
         tmp.forEachIndexed { index, intList ->
             if (index + windowSize >= tmp.size)
                 return@forEachIndexed
             if (intList == tmp[index + windowSize])
-                return index + 1 to windowSize
+                return index to windowSize
         }
     }
-    error("no pattern")
+    return 0 to 0
 }
 
 fun Long.primeFactors(): List<Long> = mutableListOf<Long>().let { f ->
