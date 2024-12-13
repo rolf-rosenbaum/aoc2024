@@ -29,10 +29,9 @@ private fun Trail.scoreAllHikes(rating: Boolean = false): Int =
         }
 
 fun Trail.scoreHikes(start: Point, rating: Boolean = false): Int {
-    val visited = mutableSetOf<Point>()
     var score = 0
+    val visited = mutableSetOf<Point>()
     val queue = LinkedList<Point>().apply { add(start) }
-
     while (queue.isNotEmpty()) {
         val next = queue.poll()
         if (visited.add(next) || rating) {
