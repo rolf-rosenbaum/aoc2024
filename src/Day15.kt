@@ -6,7 +6,7 @@ import java.util.*
 
 fun main() {
 
-    fun part1(input: List<String>, test: Boolean = false): Int {
+    fun part1(input: List<String>): Int {
 
         return generateSequence(input.parseWarehouse()) {
             it.robotMove()
@@ -22,23 +22,36 @@ fun main() {
                 .replace("#", "##")
                 .replace("@", "@.")
         }.parseWarehouse(true)
-        println(wh.prettyPrint(true))
 
         val finished = generateSequence(wh) {
-            it.robotMove2().also { println(it.prettyPrint(true)) }
+            it.robotMove2()
         }.dropWhile { it.step < it.moves.size }.first()
-        println(finished.prettyPrint(true))
-        return 0
+        var left = true
+        var sum = 0
+        (0..wh.maxY).forEach { y->
+            val line = finished.boxes.filter { it.y == y }.sortedBy { it.x }
+            sum += line.sumOf {
+                if (left) {
+                    left = false
+                    it.x + 100 * it.y
+                }
+                else {
+                    left = true
+                    0
+                }
+            }
+        }
+        return sum
     }
 
     val testInput = readInput("Day15_test")
     val input = readInput("Day15")
 
-    println("test part1: ${part1(testInput, true)}")
+    println("test part1: ${part1(testInput)}")
     part1(input).writeToConsole()
 
-    println("test part2: ${part2(testInput, true)}")
-//    part2(input).writeToConsole()
+    println("test part2: ${part2(testInput)}")
+    part2(input).writeToConsole()
 }
 
 data class Warehouse(
@@ -77,7 +90,6 @@ data class Warehouse(
 
     fun robotMove2(): Warehouse {
         val direction = moves[step]
-        println(direction)
         if (direction in listOf(East, West)) return robotMove()
 
         val nextRobot = robot + direction.vector
@@ -85,7 +97,7 @@ data class Warehouse(
             copy(step = step + 1)
         } else if (boxes.contains(nextRobot)) {
             val adjacentBoxes = adjacentBoxes(nextRobot, direction)
-            if (walls.contains(adjacentBoxes.last() + direction.vector)) {
+            if (adjacentBoxes.any { walls.contains(it + direction.vector) }) {
                 copy(step = step + 1)
             } else {
                 adjacentBoxes.reversed().forEach {
@@ -107,33 +119,30 @@ data class Warehouse(
                     if (part2)
                         if (boxes.contains(p)) append(if (left) ("[") else "]").also { left = !left }
                         else if (boxes.contains(p)) append("O")
-                else
-                if (robot == p) append("@") else append(".")
+                        else
+                            if (robot == p) append("@") else append(".")
             }
             append("\n")
         }
     }
 
-    fun adjacentBoxes(point: Point, direction: Direction): Set<Point> {
-        val visited = mutableSetOf<Point>()
+    private fun adjacentBoxes(point: Point, direction: Direction): Set<Point> {
+        val adjacent = mutableSetOf<Point>()
         val queue = LinkedList<Point>().apply { add(point) }
         while (queue.isNotEmpty()) {
             val next = queue.poll()
-            if (visited.add(next)) {
-                if (boxes.contains(next + direction.vector)) {
-                    queue.add(next)
-                    if (boxes.count {b->b.x < next.x} % 2 == 0) {
-                        queue.add(next + East.vector)
-                        queue.add(next + direction.vector + East.vector)
-                    } else {
-                        queue.add(next + West.vector)
-                        queue.add(next + direction.vector + West.vector)
-                    }
-                }
+            if (adjacent.contains(next)) continue
+            if (boxes.contains(next)) adjacent.add(next)
+            if (boxes.contains(next + direction.vector)) {
+                queue.add(next + direction.vector)
+            }
+            if (boxes.count { it.y == next.y && it.x < next.x } % 2 == 0) {
+                queue.add(next + East.vector)
+            } else {
+                queue.add(next + West.vector)
             }
         }
-        return visited
-
+        return adjacent
     }
 }
 
