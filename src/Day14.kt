@@ -1,6 +1,11 @@
 fun main() {
-
     fun part1(input: List<String>, test: Boolean = false): Int {
+        val robots = input.parseRobots()
+        return safetyfactor(test, robots)
+
+    }
+
+    fun part2(input: List<String>, test: Boolean = false): Int {
         val robots = input.parseRobots()
 
         val maxX = if (test) 10 else 100
@@ -10,27 +15,9 @@ fun main() {
 
         val result = generateSequence(robots) {
             it.step(maxX, maxY)
-        }.drop(100).first()
-        result.prettyPrint(maxX, maxY)
-        return result.safetyFactor(midX, midY)
+        }.take(100000).toList().map { it.safetyFactor(midX, midY) }
 
-    }
-
-    fun part2(input: List<String>, test: Boolean = false): Int {
-        val robots = input.parseRobots()
-
-        val maxX = if (test) 10 else 100
-        val maxY = if (test) 6 else 102
-        var count = 0
-        val tree = generateSequence(robots) {
-            it.step(maxX, maxY).also { robots ->
-                robots.prettyPrint()
-                count++
-                print("$count\r")
-            }
-        }.dropWhile { !it.hasChristmasTree() }.first()
-        println(tree.prettyPrint(maxX, maxY))
-        return count
+        return result.indexOf(result.minOf { it })
     }
 
     val testInput = readInput("Day14_test")
@@ -55,6 +42,19 @@ fun List<Robot>.prettyPrint(maxX: Int = 10, maxY: Int = 6): String =
             append("\n")
         }
     }
+
+fun safetyfactor(test: Boolean, robots: List<Robot>): Int {
+    val maxX = if (test) 10 else 100
+    val maxY = if (test) 6 else 102
+    val midX = if (test) 5 else 50
+    val midY = if (test) 3 else 51
+
+    val result = generateSequence(robots) {
+        it.step(maxX, maxY)
+    }.drop(100).first()
+    //        result.prettyPrint(maxX, maxY)
+    return result.safetyFactor(midX, midY)
+}
 
 fun List<Robot>.hasChristmasTree(): Boolean = prettyPrint(100, 102).contains("1111111111")
 
