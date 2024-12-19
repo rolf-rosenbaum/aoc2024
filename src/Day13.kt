@@ -41,7 +41,7 @@ data class ClawMachine(val buttonA: VectorLong, val buttonB: VectorLong, val pri
     }
 }
 
-fun List<String>.parseToClawMachines(addition: Long = 0L): List<ClawMachine> {
+private fun List<String>.parseToClawMachines(addition: Long = 0L): List<ClawMachine> {
     val machines = mutableListOf<ClawMachine>()
     val numRegex = """\D+X[+=](\d+), Y[+=](\d+)""".toRegex()
 

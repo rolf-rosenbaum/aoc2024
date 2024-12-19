@@ -106,7 +106,7 @@ fun Region.scanFromRight(): Int =
         }.groups()
     }
 
-fun List<String>.parseGarden(): Garden {
+private fun List<String>.parseGarden(): Garden {
     val result = mutableMapOf<Point, Char>()
 
     forEachIndexed { y, line ->

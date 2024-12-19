@@ -29,12 +29,13 @@ fun main() {
                     return 0L
                 }
                 computer = computer.copy(regA = computer.regA + 1)
-            } while (output.takeLast(count) != originalProgram.takeLast(count))
-            count++
-            computer = computer.copy(regA = 8 * computer.regA)
+            } while (output[count] != originalProgram[count])
+            count++.also { println(it) }
+            computer = computer.copy(regA = 8 * computer.regA -1)
         } while (computer.output != originalProgram)
         return computer.regA
     }
+
 
     val testInput = readInput("Day17_test")
     val input = readInput("Day17")
@@ -74,7 +75,6 @@ data class Computer(
             3 -> return if (regA == 0L) copy(pointer = pointer + 1) else copy(pointer = op)
             4 -> return copy(regB = regB xor regC, pointer = pointer + 1)
             5 -> return copy(pointer = pointer + 1, output = output + comboOperand(op).toInt() % 8)
-
             6 -> return copy(regB = regA / 2.0.pow(comboOperand(op).toInt()).toInt(), pointer = pointer + 1)
             7 -> return copy(regC = regA / 2.0.pow(comboOperand(op).toInt()).toInt(), pointer = pointer + 1)
             else -> error("Kernel panic")
@@ -94,7 +94,7 @@ data class Computer(
 
 }
 
-fun List<String>.parseComputer(): Computer {
+private fun List<String>.parseComputer(): Computer {
     val (regA, regB, regC) = take(3).map { it.split(": ").second().toInt() }
     val program = last().split(": ").second().split(",").map(String::toInt)
     return Computer(regA = regA.toLong(), regB = regB.toLong(), regC = regC.toLong(), program = program, pointer = 0, output = emptyList())

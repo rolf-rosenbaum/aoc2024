@@ -74,7 +74,7 @@ fun List<Robot>.safetyFactor(midX: Int, midY: Int) =
             count { it.position.x < midX && it.position.y > midY } *
             count { it.position.x > midX && it.position.y > midY }
 
-fun List<String>.parseRobots(): List<Robot> {
+private fun List<String>.parseRobots(): List<Robot> {
     val robots = mutableListOf<Robot>()
     map { line ->
         val (position, vector) = line.split(" ")

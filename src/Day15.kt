@@ -147,7 +147,7 @@ data class Warehouse(
 }
 
 
-fun List<String>.parseWarehouse(part2: Boolean = false): Warehouse {
+private fun List<String>.parseWarehouse(part2: Boolean = false): Warehouse {
     val (wh, m) = filter { it.isNotEmpty() }.partition { it.startsWith("#") }
     val walls = mutableSetOf<Point>()
     val boxes = mutableSetOf<Point>()

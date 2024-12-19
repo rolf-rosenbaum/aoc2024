@@ -55,7 +55,7 @@ fun List<Pair<Int, Int>>.checksum(): Long {
     return sum
 }
 
-fun List<String>.toDisk(): MutableList<String> {
+private fun List<String>.toDisk(): MutableList<String> {
     var freeSpace = false
     val disk = mutableListOf<String>()
     var index = 0
@@ -72,7 +72,7 @@ fun List<String>.toDisk(): MutableList<String> {
     return disk
 }
 
-fun List<String>.toDisk2(): MutableList<Pair<Int, Int>> {
+private fun List<String>.toDisk2(): MutableList<Pair<Int, Int>> {
     var freeSpace = false
     val disk = mutableListOf<Pair<Int, Int>>()
     var index = 0

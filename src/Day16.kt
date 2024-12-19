@@ -4,7 +4,6 @@ import Direction.South
 import Direction.West
 import java.util.*
 import kotlin.collections.ArrayDeque
-import kotlin.math.E
 
 typealias State = Pair<Point, Direction>
 
@@ -84,7 +83,7 @@ private fun getAllShortestPathLengths(start: Point, end: Point, targetScore: Lon
         val nextMoves = currentState.next()
         for ((nextState, cost) in nextMoves) {
             if (maze.contains(nextState.first) || visited.contains(nextState)) continue
-            if( currentScore + cost + lowestScore(nextState, end, maze) > targetScore) continue
+            if (currentScore + cost + lowestScore(nextState, end, maze) > targetScore) continue
             val nextScore = currentScore + cost
             queue.add(nextState to nextScore)
         }
@@ -103,7 +102,7 @@ private fun State.next(): List<Step> {
 
 data class Step(val state: State, val cost: Int)
 
-fun List<String>.parseMaze(): Set<Point> {
+private fun List<String>.parseMaze(): Set<Point> {
     val maze = mutableSetOf<Point>()
     forEachIndexed { y, line ->
         line.forEachIndexed { x, c ->

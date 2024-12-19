@@ -63,7 +63,7 @@ enum class Ops(val operation: (Long, Long) -> Long) {
     CONCAT({ a, b -> "$a$b".toLong() })
 }
 
-fun List<String>.parseEquations(): List<Equation> = map { line ->
+private fun List<String>.parseEquations(): List<Equation> = map { line ->
     val (result, rest) = line.split(": ")
     Equation(result.toLong(), rest.split(" ").map { it.toLong() })
 }
