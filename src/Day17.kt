@@ -12,28 +12,25 @@ fun main() {
 
     fun part1(input: List<String>): String {
         return compute(input.parseComputer()).joinToString(",")
+
     }
 
     fun part2(input: List<String>): Long {
-
-        var computer = input.parseComputer().copy(regA = 0)
-        val originalProgram = computer.program
-        var count = 0
-        do {
-            do {
-                print("${computer.regA}\r")
-                val output = compute(computer)
-                if (output ==  originalProgram) {
-                    println(output)
-                    println(computer.regA)
-                    return 0L
+        val computer = input.parseComputer()
+        return computer.program
+            .reversed()
+            .map { it.toLong() }
+            .fold(listOf(0L)) { candidates, instruction ->
+                candidates.flatMap { candidate ->
+                    val shifted = candidate shl 3
+                    (shifted..shifted + 8).mapNotNull { attempt ->
+                        if (compute(computer.copy(regA = attempt)).firstOrNull()?.toLong() == instruction)
+                            attempt
+                        else null
+                    }
                 }
-                computer = computer.copy(regA = computer.regA + 1)
-            } while (output[count] != originalProgram[count])
-            count++.also { println(it) }
-            computer = computer.copy(regA = 8 * computer.regA -1)
-        } while (computer.output != originalProgram)
-        return computer.regA
+
+            }.first()
     }
 
 
@@ -97,5 +94,12 @@ data class Computer(
 private fun List<String>.parseComputer(): Computer {
     val (regA, regB, regC) = take(3).map { it.split(": ").second().toInt() }
     val program = last().split(": ").second().split(",").map(String::toInt)
-    return Computer(regA = regA.toLong(), regB = regB.toLong(), regC = regC.toLong(), program = program, pointer = 0, output = emptyList())
+    return Computer(
+        regA = regA.toLong(),
+        regB = regB.toLong(),
+        regC = regC.toLong(),
+        program = program,
+        pointer = 0,
+        output = emptyList()
+    )
 }

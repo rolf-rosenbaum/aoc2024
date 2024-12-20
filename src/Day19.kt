@@ -1,17 +1,16 @@
-
 fun main() {
 
     fun part1(input: List<String>): Int {
         val (towels, patterns) = input.parseTowels()
 
         return patterns.count {
-            it.matchesPatterns(towels)
+            makePattern(towels, it) > 0
         }
-
     }
 
-    fun part2(input: List<String>): Int {
-        return 0
+    fun part2(input: List<String>): Long {
+        val (towels, patterns) = input.parseTowels()
+        return patterns.sumOf { makePattern(towels, it) }
     }
 
     val testInput = readInput("Day19_test")
@@ -24,12 +23,14 @@ fun main() {
     part2(input).writeToConsole()
 }
 
-private fun CharSequence.matchesPatterns(towels: List<String>): Boolean {
-    generateSequence(this) {
-        it
+tailrec fun makePattern(towels: List<String>, pattern: String, cache: MutableMap<String, Long> = mutableMapOf()): Long {
+    if (pattern.isEmpty()) return 1L
+    return cache.getOrPut(pattern) {
+        towels.filter { pattern.startsWith(it) }
+            .sumOf {
+                makePattern(towels, pattern.removePrefix(it), cache)
+            }
     }
-
-    return true
 }
 
 private fun List<String>.parseTowels(): Pair<List<String>, List<String>> =
