@@ -7,7 +7,7 @@ import kotlin.collections.ArrayDeque
 
 typealias State = Pair<Point, Direction>
 
-val allDirections = listOf(East, West, North, South)
+private val allDirections = listOf(East, West, North, South)
 fun main() {
 
 
@@ -100,7 +100,7 @@ private fun State.next(): List<Step> {
     }
 }
 
-data class Step(val state: State, val cost: Int)
+private data class Step(val state: State, val cost: Int)
 
 private fun List<String>.parseMaze(): Set<Point> {
     val maze = mutableSetOf<Point>()
