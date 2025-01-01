@@ -2,16 +2,8 @@ import kotlin.math.pow
 
 fun main() {
 
-    fun compute(computer: Computer): List<Int> {
-        var computer1 = computer
-        do {
-            computer1 = computer1.execute()
-        } while (computer1.running)
-        return computer1.output
-    }
-
     fun part1(input: List<String>): String {
-        return compute(input.parseComputer()).joinToString(",")
+        return input.parseComputer().compute().joinToString(",")
 
     }
 
@@ -22,17 +14,15 @@ fun main() {
             .map { it.toLong() }
             .fold(listOf(0L)) { candidates, instruction ->
                 candidates.flatMap { candidate ->
-                    val shifted = candidate shl 3
-                    (shifted..shifted + 8).mapNotNull { attempt ->
-                        if (compute(computer.copy(regA = attempt)).firstOrNull()?.toLong() == instruction)
-                            attempt
-                        else null
+                    val shifted = candidate * 8
+                    (shifted..shifted + 8).mapNotNull { n ->
+                        n.takeIf {
+                            computer.copy(regA = n).compute().firstOrNull()?.toLong() == instruction
+                        }
                     }
                 }
-
             }.first()
     }
-
 
     val testInput = readInput("Day17_test")
     val input = readInput("Day17")
@@ -53,8 +43,17 @@ data class Computer(
     val program: List<Int>,
     val pointer: Int,
     val running: Boolean = true,
-    val output: List<Int>
+    val output: List<Long>
 ) {
+
+    fun compute(): List<Long> {
+        var c = this
+        do {
+            c = c.execute()
+        } while (c.running)
+        return c.output
+    }
+
     val instructions: List<Instruction>
         get() = program.windowed(2, 2) { it.first() to it.second() }
 
@@ -71,7 +70,7 @@ data class Computer(
             2 -> return copy(regB = comboOperand(op) % 8, pointer = pointer + 1)
             3 -> return if (regA == 0L) copy(pointer = pointer + 1) else copy(pointer = op)
             4 -> return copy(regB = regB xor regC, pointer = pointer + 1)
-            5 -> return copy(pointer = pointer + 1, output = output + comboOperand(op).toInt() % 8)
+            5 -> return copy(pointer = pointer + 1, output = output + comboOperand(op) % 8)
             6 -> return copy(regB = regA / 2.0.pow(comboOperand(op).toInt()).toInt(), pointer = pointer + 1)
             7 -> return copy(regC = regA / 2.0.pow(comboOperand(op).toInt()).toInt(), pointer = pointer + 1)
             else -> error("Kernel panic")

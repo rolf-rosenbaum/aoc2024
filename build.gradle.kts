@@ -13,3 +13,7 @@ tasks {
         gradleVersion = "8.11.1"
     }
 }
+
+dependencies {
+    implementation("com.danrusu.pods4k:pods4k:0.6.0")
+}
